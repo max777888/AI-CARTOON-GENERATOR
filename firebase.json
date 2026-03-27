@@ -1,0 +1,36 @@
+{
+  "functions": [
+    {
+      "source": "functions",
+      "codebase": "default",
+      "disallowLegacyRuntimeConfig": true,
+      "ignore": [
+        "venv",
+        ".git",
+        "firebase-debug.log",
+        "firebase-debug.*.log",
+        "*.local"
+      ],
+      "runtime": "python313"
+    }
+  ],
+  "emulators": {
+    "functions": {
+      "port": 5001
+    },
+    "firestore": {
+      "port": 8080
+    },
+    "storage": {
+      "port": 4000
+    },
+    "ui": {
+      "enabled": true,
+      "port": 4001
+    },
+    "singleProjectMode": true
+  },
+  "storage": {
+    "rules": "storage.rules"
+  }
+}
