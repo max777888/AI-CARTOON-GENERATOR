@@ -67,7 +67,7 @@ def analyze_script(req: https_fn.Request) -> https_fn.Response:
     from src.script_manager import handle_analyze_script
     return handle_analyze_script(req)    
 
-@https_fn.on_request()
+@https_fn.on_request(timeout_sec=300)
 def generate_frame(req: https_fn.Request) -> https_fn.Response:
     from src.frame_manager import handle_generate_frame
     return handle_generate_frame(req)
