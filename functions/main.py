@@ -15,7 +15,7 @@ def get_app():
             print(" Firebase Admin initialized (using ADC)")
         except Exception:
             # Fallback for emulator
-            initialize_app(options={'projectId': 'ai-cartoon-generator-202-5d178'})
+            initialize_app(options={'projectId': os.environ.get("PROJECT_ID")})
             print(" Firebase Admin initialized with projectId fallback")
     return firebase_admin.get_app()
 
@@ -71,3 +71,9 @@ def analyze_script(req: https_fn.Request) -> https_fn.Response:
 def generate_frame(req: https_fn.Request) -> https_fn.Response:
     from src.frame_manager import handle_generate_frame
     return handle_generate_frame(req)
+
+
+@https_fn.on_request(timeout_sec=540)
+def generate_scene_video(req: https_fn.Request) -> https_fn.Response:
+    from src.video_manager import handle_generate_scene_video
+    return handle_generate_scene_video(req)

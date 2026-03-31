@@ -27,7 +27,7 @@ def handle_generate_frame(req: https_fn.Request) -> https_fn.Response:
 
     if not firebase_admin._apps:
         firebase_admin.initialize_app(options={
-            'projectId': 'ai-cartoon-generator-202-5d178',
+            'projectId': os.environ.get("PROJECT_ID"),
             'storageBucket': os.environ.get("STORAGE_BUCKET"),
         })
 
