@@ -1,10 +1,21 @@
 rules_version = '2';
 
-// Craft rules based on data in your Firestore database
-// allow write: if firestore.get(
-//    /databases/(default)/documents/users/$(request.auth.uid)).data.isAdmin;
 service firebase.storage {
   match /b/{bucket}/o {
+
+    // Generated media (frames, videos) are publicly readable
+    match /projects/{projectId}/scenes/{sceneId}/{fileName} {
+      allow read: if true;
+      allow write: if false;
+    }
+
+    // Character assets are publicly readable
+    match /projects/{projectId}/characters/{charId}/{allPaths=**} {
+      allow read: if true;
+      allow write: if false;
+    }
+
+    // Everything else is denied
     match /{allPaths=**} {
       allow read, write: if false;
     }

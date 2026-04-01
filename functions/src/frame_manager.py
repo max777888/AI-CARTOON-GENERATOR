@@ -2,7 +2,7 @@ import os
 import io
 import json
 import base64
-from urllib.parse import urlparse, unquote
+from urllib.parse import urlparse, unquote, quote
 from openai import OpenAI
 import firebase_admin
 from firebase_admin import firestore, storage
@@ -10,6 +10,17 @@ from firebase_functions import https_fn
 from dotenv import load_dotenv
 
 load_dotenv()
+
+
+def _storage_url(blob_path: str) -> str:
+    """Returns the correct Storage URL for emulator (local) or production."""
+    bucket = os.environ.get("STORAGE_BUCKET")
+    encoded = quote(blob_path, safe="")
+    emulator_host = os.environ.get("FIREBASE_STORAGE_EMULATOR_HOST")
+    if emulator_host:
+        return f"http://{emulator_host}/v0/b/{bucket}/o/{encoded}?alt=media"
+    return f"https://firebasestorage.googleapis.com/v0/b/{bucket}/o/{encoded}?alt=media"
+
 
 _openai_client = None
 
@@ -101,8 +112,7 @@ def handle_generate_frame(req: https_fn.Request) -> https_fn.Response:
         blob_path = f"projects/{project_id}/scenes/{scene_id}/frame.png"
         blob = bucket.blob(blob_path)
         blob.upload_from_string(image_bytes, content_type="image/png")
-        blob.make_public()
-        permanent_url = blob.public_url
+        permanent_url = _storage_url(blob_path)
 
         # 6. Update Firestore with the permanent frame URL
         scene_ref.update({

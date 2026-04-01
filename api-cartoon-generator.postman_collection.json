@@ -51,13 +51,81 @@
       "response": []
     },
     {
+      "name": "UPLOAD-ASSETS-IMAGE",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "formdata",
+          "formdata": [
+            {
+              "key": "projectId",
+              "value": "{{projectId}}",
+              "type": "text",
+              "uuid": "25cec390-599d-4e37-9ae3-ca45c5e35767"
+            },
+            {
+              "key": "characterId",
+              "value": "{{characterId}}",
+              "type": "text",
+              "uuid": "df72f72b-53d2-462a-b3b9-72d6c71412bd"
+            },
+            {
+              "key": "file",
+              "type": "file",
+              "uuid": "ebf3c2c2-1203-4528-b327-e92cce5da76b",
+              "src": "20260130_133841.jpg"
+            }
+          ]
+        },
+        "url": {
+          "raw": "http://localhost:5001/ai-cartoon-generator-202-5d178/us-central1/upload_asset",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "5001",
+          "path": [
+            "ai-cartoon-generator-202-5d178",
+            "us-central1",
+            "upload_asset"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
       "name": "CREATE-PROJECT",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "// 1. Parse the JSON response\r",
+              "const responseData = pm.response.json();\r",
+              "\r",
+              "// 2. Extract the projectId\r",
+              "const projectId = responseData.projectId;\r",
+              "\r",
+              "// 3. Save it to an Environment Variable\r",
+              "if (projectId) {\r",
+              "    pm.globals.set(\"projectId\", projectId);\r",
+              "    // Use 'globals' instead of 'environment'\r",
+              "    console.log(\"Project ID saved: \" + projectId);\r",
+              "}"
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        }
+      ],
       "request": {
         "method": "POST",
         "header": [],
         "body": {
           "mode": "raw",
-          "raw": "{\r\n  \"name\": \"Scary Granny's Kitchen\",\r\n  \"description\": \"A horror-themed cartoon featuring an unsettling grandmother.\"\r\n}",
+          "raw": "{\r\n  \"name\": \"Granny's Kitchen\",\r\n  \"description\": \"A horror-themed cartoon featuring an unsettling grandmother.\"\r\n}",
           "options": {
             "raw": {
               "language": "json"
@@ -82,12 +150,35 @@
     },
     {
       "name": "CREATE-CHARACTER",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "// 1. Parse the JSON response\r",
+              "const responseData = pm.response.json();\r",
+              "\r",
+              "// 2. Extract the projectId\r",
+              "const characterId = responseData.charId;\r",
+              "\r",
+              "// 3. Save it to an Environment Variable\r",
+              "if (characterId) {\r",
+              "    pm.globals.set(\"characterId\", characterId);\r",
+              "    console.log(\"CharacterId saved: \" + characterId);\r",
+              "}"
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        }
+      ],
       "request": {
         "method": "POST",
         "header": [],
         "body": {
           "mode": "raw",
-          "raw": "{\r\n  \"projectId\": \"YJIsLkRX2dTYhvxqlb0e\",\r\n  \"name\": \"Granny\",\r\n  \"description\": \"An unsettling, frail grandmother with a terrifyingly wide smile.\",\r\n  \"traits\": [\"Scary\", \"Raspy Voice\", \"Horror\"]\r\n}",
+          "raw": "{\r\n  \"projectId\": \"{{projectId}}\",\r\n  \"name\": \"Granny2\",\r\n  \"description\": \"An unsettling, frail grandmother with a terrifyingly wide smile.\",\r\n  \"traits\": [\"Scary\", \"Raspy Voice\", \"Horror\"]\r\n}",
           "options": {
             "raw": {
               "language": "json"
@@ -112,12 +203,36 @@
     },
     {
       "name": "ANALYZE_SCRIPT",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "// 1. Parse the JSON response\r",
+              "const responseData = pm.response.json();\r",
+              "\r",
+              "// 2. Check if sceneIds exists and has at least one item\r",
+              "if (responseData.sceneIds && responseData.sceneIds.length > 0) {\r",
+              "    // Grab the first ID in the list\r",
+              "    const firstSceneId = responseData.sceneIds[0];\r",
+              "    \r",
+              "    // 3. Save it to your Environment Variable\r",
+              "    pm.globals.set(\"sceneId\", firstSceneId);\r",
+              "    console.log(\"Scene ID saved: \" + firstSceneId);\r",
+              "}"
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        }
+      ],
       "request": {
         "method": "POST",
         "header": [],
         "body": {
           "mode": "raw",
-          "raw": "{\r\n  \"projectId\": \"YJIsLkRX2dTYhvxqlb0e\",\r\n  \"scriptText\": \"INT. KITCHEN - NIGHT. The air is thick with the smell of burnt sugar. Granny stands at the counter, her back to the door. She is humming a warped version of a lullaby. YOUNG BOY enters, trembling. YOUNG BOY: Granny? I'm hungry. Granny turns slowly, her eyes milky white. GRANNY: Oh, I've been waiting for you, little one. The oven is just the right temperature.\"\r\n}",
+          "raw": "{\r\n  \"projectId\": \"{{projectId}}\",\r\n  \"scriptText\": \"INT. KITCHEN - NIGHT. The air is thick with the smell of burnt sugar. Granny stands at the counter, her back to the door. She is humming a warped version of a lullaby. YOUNG BOY enters, trembling. YOUNG BOY: Granny? I'm hungry. Granny turns slowly, her eyes milky white. GRANNY: Oh, I've been waiting for you, little one. The oven is just the right temperature.\"\r\n}",
           "options": {
             "raw": {
               "language": "json"
@@ -147,7 +262,7 @@
         "header": [],
         "body": {
           "mode": "raw",
-          "raw": "{\r\n  \"projectId\": \"YJIsLkRX2dTYhvxqlb0e\",\r\n  \"sceneId\": \"b293c948-f9d6-47f6-86a9-3b1690c47d1e\"\r\n}",
+          "raw": "{\r\n  \"projectId\": \"{{projectId}}\",\r\n  \"sceneId\": \"{{sceneId}}\"\r\n}",
           "options": {
             "raw": {
               "language": "json"
@@ -165,6 +280,39 @@
             "ai-cartoon-generator-202-5d178",
             "us-central1",
             "generate_frame"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "GENERATE_FRAME_VIDEO",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"projectId\": \"{{projectId}}\",\r\n  \"sceneId\": \"{{sceneId}}\"\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://127.0.0.1:5001/ai-cartoon-generator-202-5d178/us-central1/generate_scene_video",
+          "protocol": "http",
+          "host": [
+            "127",
+            "0",
+            "0",
+            "1"
+          ],
+          "port": "5001",
+          "path": [
+            "ai-cartoon-generator-202-5d178",
+            "us-central1",
+            "generate_scene_video"
           ]
         }
       },
